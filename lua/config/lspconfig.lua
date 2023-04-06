@@ -2,15 +2,32 @@
 vim = vim
 
 local servers = {
-  'lua_ls',
-  'rust_analyzer',
-  'jsonls',
-  'bashls',
-  'clangd',
-  'dockerls',
-  'pyright',
+  lua_ls = {},
+  rust_analyzer = {
+    settings = {
+      ['rust_analyzer'] = {
+        imports = {
+          prefix = 'self',
+        },
+        cargo = {
+          buildScripts = { enable = true },
+          features = { 'all' },
+        },
+        procMacro = { enable = true },
+      },
+    },
+  },
+  jsonls = {},
+  bashls = {},
+  clangd = {},
+  dockerls = {},
+  pyright = {},
 }
-require('mason-lspconfig').setup { ensure_installed = servers }
+local servers_keys = {}
+for k, _ in pairs(servers) do
+  table.insert(servers_keys, k)
+end
+require('mason-lspconfig').setup { ensure_installed = servers_keys }
 local lsp = require('lspconfig')
 local coq_wrap = require('coq').lsp_ensure_capabilities
 
@@ -33,7 +50,7 @@ local function on_attach(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<Leader>gr', '<Cmd>Telescope lsp_references<CR>', opts)
 
-  local augroup_id = vim.api.nvim_create_augroup("LSPAttach", { clear = false })
+  local augroup_id = vim.api.nvim_create_augroup('LSPAttach', { clear = false })
   vim.api.nvim_clear_autocmds({ buffer = bufnr, group = augroup_id })
   vim.api.nvim_create_autocmd('CursorHold', {
     buffer = bufnr,
@@ -53,10 +70,54 @@ local function on_attach(client, bufnr)
     group = augroup_id,
     callback = vim.lsp.buf.clear_references,
   })
+  vim.api.nvim_create_autocmd('CompleteDone', {
+    buffer = bufnr,
+    group = augroup_id,
+    callback = function()
+      local completed_item = vim.v.completed_item
+      if not (completed_item
+          and completed_item.user_data
+          and completed_item.user_data.nvim
+          and completed_item.user_data.nvim.lsp
+          and completed_item.user_data.nvim.lsp.completion_item) then
+        return
+      end
+
+      local item = completed_item.user_data.nvim.lsp.completion_item
+      vim.lsp.buf_request(bufnr, 'completionItem/resolve', item, function(_, _, result)
+        if (result
+            and result.params
+            and result.params.additionalTextEdits) then
+          vim.lsp.util.apply_text_edits(result.params.additionalTextEdits, bufnr, 'utf-8')
+        end
+      end)
+    end,
+  })
 end
 
-for _, server in ipairs(servers) do
-  lsp[server].setup(coq_wrap({
+-- Stop diagnostics from taking over focus.
+vim.diagnostic.config({ float = { focusable = false } })
+
+for server, server_params in pairs(servers) do
+  local params = {
     on_attach = on_attach,
-  }))
+    handlers = {
+      ['textDocument/publishDiagnostics'] = vim.lsp.with(
+        vim.lsp.diagnostic.on_publish_diagnostics, {
+          signs = false,
+          virtual_text = false,
+          underline = true,
+        }
+      ),
+      ['textDocument/signatureHelp'] = vim.lsp.with(
+        vim.lsp.handlers.signature_help, {
+          silent = true,
+          focusable = false,
+        }
+      ),
+      ['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { focusable = false }),
+    },
+  }
+  local effective_params = vim.tbl_deep_extend('force', params, server_params)
+  lsp[server].setup(coq_wrap(effective_params))
 end
