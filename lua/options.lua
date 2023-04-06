@@ -109,39 +109,40 @@ vim.api.nvim_create_autocmd('FileType', {
 vim.api.nvim_create_user_command('Spaces', function(opts)
   local num = tonumber(opts.fargs[1])
   if num == nil then
-    print("got a non-number: " .. opts.fargs[1])
+    print('error: got a non-number: ' .. opts.fargs[1])
     return
   end
   vim.bo.tabstop = num
   vim.bo.shiftwidth = num
   vim.bo.softtabstop = num
   vim.bo.expandtab = true
-end, { nargs = 1, desc = 'Sets the indent size of Spaces for the buffer.'})
+end, { nargs = 1, desc = 'Sets the indent size of Spaces for the buffer.' })
 vim.api.nvim_create_user_command('Tabs', function(opts)
   local num = tonumber(opts.fargs[1])
   if num == nil then
-    print("got a non-number: " .. opts.fargs[1])
+    print('error: got a non-number: ' .. opts.fargs[1])
     return
   end
   vim.bo.tabstop = num
   vim.bo.shiftwidth = num
   vim.bo.softtabstop = num
   vim.bo.expandtab = false
-end, { nargs = 1, desc = 'Sets the indent size of Tabs for the buffer.'})
+end, { nargs = 1, desc = 'Sets the indent size of Tabs for the buffer.' })
 
 function Modeline()
   local et = vim.bo.expandtab and '' or 'no'
   local modeline = string.format('vim: set ff=unix autoindent ts=%d sw=%d tw=%d %set :'
-    , vim.bo.tabstop
-    , vim.bo.shiftwidth
-    , vim.bo.textwidth
-    , et)
+  , vim.bo.tabstop
+  , vim.bo.shiftwidth
+  , vim.bo.textwidth
+  , et)
   if not string.find(modeline, ' ') then
-    modeline = ' '..modeline
+    modeline = ' ' .. modeline
   end
 end
+
 vim.api.nvim_set_keymap('n', '<Leader>ml', ''
-  , { noremap = true, silent = true, callback = Modeline })
+, { noremap = true, silent = true, callback = Modeline })
 
 -- Disable unused providers
 vim.g.loaded_perl_provider = 0

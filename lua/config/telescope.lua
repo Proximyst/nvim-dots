@@ -26,12 +26,12 @@ telescope.setup {
   },
 }
 vim.api.nvim_set_keymap('n', '<Leader><Tab>', '',
-  { noremap = true, silent = true, callback = builtin.find_files})
+  { noremap = true, silent = true, callback = builtin.find_files })
 vim.api.nvim_set_keymap('n', '<Leader>gg', '',
-  { noremap = true, silent = true, callback = builtin.live_grep})
+  { noremap = true, silent = true, callback = builtin.live_grep })
 vim.api.nvim_set_keymap('n', '<Leader>gb', '',
-  { noremap = true, silent = true, callback = builtin.buffers})
+  { noremap = true, silent = true, callback = builtin.buffers })
 vim.api.nvim_set_keymap('n', '<Leader>gh', '',
-  { noremap = true, silent = true, callback = builtin.help_tags})
+  { noremap = true, silent = true, callback = builtin.help_tags })
 
 telescope.load_extension('fzf')
