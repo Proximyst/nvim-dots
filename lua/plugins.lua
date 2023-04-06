@@ -47,13 +47,21 @@ return packer.startup(function(use)
 
   use 'kien/rainbow_parentheses.vim'
   use {'morhetz/gruvbox'
-      , config = function() require('config.gruvbox') end}
+      , config = function()
+        vim.g.gruvbox_italic = true
+        vim.o.background = 'dark'
+        vim.cmd [[colorscheme gruvbox]]
+      end}
   use 'machakann/vim-highlightedyank'
   use {'dylanaraps/root.vim'
       , config = function() require('config.rootvim') end}
   use {'nvim-lualine/lualine.nvim'
-      , config = function() require('lualine').setup() end
-      , requires = {{'nvim-tree/nvim-web-devicons', opt = true}}}
+      , config = function() require('lualine').setup {
+        options = {
+          theme = 'gruvbox',
+        },
+      } end
+      , requires = {{'nvim-tree/nvim-web-devicons'}}}
   use {'lewis6991/gitsigns.nvim'
       , config = function() require('gitsigns').setup() end}
   use {'nvim-telescope/telescope.nvim'
