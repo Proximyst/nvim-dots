@@ -2,7 +2,9 @@
 vim = vim
 
 local servers = {
+  -- Lua
   lua_ls = {},
+  -- Rust
   rust_analyzer = {
     settings = {
       ['rust-analyzer'] = {
@@ -25,11 +27,18 @@ local servers = {
       },
     },
   },
+  -- JSON, JSON5
   jsonls = {},
+  -- Shell, bash
   bashls = {},
+  -- C, C++
   clangd = {},
+  -- Dockerfile / docker-compose
   dockerls = {},
+  -- Python
   pyright = {},
+  -- TOML
+  taplo = {},
 }
 local servers_keys = {}
 for k, _ in pairs(servers) do
@@ -64,7 +73,9 @@ local function on_attach(client, bufnr)
     buffer = bufnr,
     group = augroup_id,
     callback = function()
-      vim.lsp.buf.document_highlight()
+      if client.server_capabilities.document_highlight then
+        vim.lsp.buf.document_highlight()
+      end
       vim.diagnostic.open_float({ bufnr = bufnr }, { focus = false })
     end,
   })
