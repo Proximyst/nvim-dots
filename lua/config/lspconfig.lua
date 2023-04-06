@@ -5,15 +5,23 @@ local servers = {
   lua_ls = {},
   rust_analyzer = {
     settings = {
-      ['rust_analyzer'] = {
+      ['rust-analyzer'] = {
         imports = {
           prefix = 'self',
         },
         cargo = {
           buildScripts = { enable = true },
-          features = { 'all' },
+          features = 'all',
         },
         procMacro = { enable = true },
+        workspace = {
+          symbol = {
+            search = {
+              kind = 'all_symbols',
+              scope = 'workspace_and_dependencies',
+            },
+          },
+        },
       },
     },
   },
