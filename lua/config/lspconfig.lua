@@ -76,6 +76,12 @@ local function on_attach(client, bufnr)
       if client.server_capabilities.documentHighlightProvider then
         vim.lsp.buf.document_highlight()
       end
+      -- I don't want to open a float if there is already something open (docs!).
+      for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+        if vim.api.nvim_win_get_config(winid).relative ~= '' then
+          return
+        end
+      end
       vim.diagnostic.open_float({ bufnr = bufnr }, { focus = false })
     end,
   })

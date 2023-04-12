@@ -21,6 +21,18 @@ vim.api.nvim_set_keymap('n', '<Leader>tq', ':tabclose<CR>', { noremap = true, si
 vim.api.nvim_set_keymap('n', '<Leader>tw', ':w<CR>:tabclose<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>s', '"+', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<Leader>s', '"+', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Esc>', '', {
+  noremap = true,
+  silent = true,
+  callback = function()
+    for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+      if vim.api.nvim_win_get_config(winid).relative ~= '' then
+        -- This is a floating window.
+        vim.api.nvim_win_close(winid, true)
+      end
+    end
+  end
+})
 
 -- Have coloured columns at col 80, 120, 140, and 240.
 vim.wo.colorcolumn = '80,120,140,240'
