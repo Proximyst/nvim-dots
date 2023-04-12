@@ -80,7 +80,7 @@ return packer.startup(function(use)
   use { 'cespare/vim-toml', ft = 'toml' }
   use { 'euclio/vim-markdown-composer'
   , ft = 'markdown'
-  , run = 'cargo build --release'
+  , run = '$HOME/.cargo/bin/cargo build --release'
   , config = [[require('config.markdowncomposer')]] }
   use { 'elixir-editors/vim-elixir', ft = 'elixir' }
 
