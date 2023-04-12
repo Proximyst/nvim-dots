@@ -27,7 +27,7 @@ telescope.setup {
 }
 vim.api.nvim_set_keymap('n', '<Leader><Tab>', '',
   { noremap = true, silent = true, callback = builtin.find_files })
-vim.api.nvim_set_keymap('n', '<Leader>gg', '',
+vim.api.nvim_set_keymap('n', '<Leader>gr', '',
   { noremap = true, silent = true, callback = builtin.live_grep })
 vim.api.nvim_set_keymap('n', '<Leader>gb', '',
   { noremap = true, silent = true, callback = builtin.buffers })
