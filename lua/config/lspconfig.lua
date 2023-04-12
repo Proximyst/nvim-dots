@@ -73,7 +73,7 @@ local function on_attach(client, bufnr)
     buffer = bufnr,
     group = augroup_id,
     callback = function()
-      if client.server_capabilities.document_highlight then
+      if client.server_capabilities.documentHighlightProvider then
         vim.lsp.buf.document_highlight()
       end
       vim.diagnostic.open_float({ bufnr = bufnr }, { focus = false })
@@ -82,7 +82,11 @@ local function on_attach(client, bufnr)
   vim.api.nvim_create_autocmd('CursorHoldI', {
     buffer = bufnr,
     group = augroup_id,
-    callback = vim.lsp.buf.signature_help,
+    callback = function()
+      if client.server_capabilities.signatureHelpProvider then
+        vim.lsp.buf.signature_help()
+      end
+    end
   })
   vim.api.nvim_create_autocmd('CursorMoved', {
     buffer = bufnr,
