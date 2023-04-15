@@ -23,65 +23,73 @@ return packer.startup(function(use)
   use 'tpope/vim-endwise'
   use 'tpope/vim-sleuth'
   use 'tpope/vim-surround'
-  use { 'ms-jpq/coq_nvim'
-  , requires = { { 'ms-jpq/coq.artifacts' } }
-  , setup = function() vim.g['coq_settings'] = { auto_start = 'shut-up' } end }
-  use { 'neovim/nvim-lspconfig'
-  , requires = {
-    {
-      'williamboman/mason.nvim'
-      ,
-      config = function()
-        require('mason').setup {
-          registries = {
-            'lua:mason-registry.index',
-            'github:mason-org/mason-registry',
-          },
-        }
-        require('mason-registry').refresh()
-      end
-    },
-    {
-      'williamboman/mason-lspconfig.nvim'
-      ,
-      after = 'mason.nvim'
-    },
+  use { 'ms-jpq/coq_nvim',
+    requires = { { 'ms-jpq/coq.artifacts' } },
+    setup = function() vim.g['coq_settings'] = { auto_start = 'shut-up' } end,
   }
-  , config = function() require('config.lspconfig') end
-  , after = { 'coq_nvim', 'mason-lspconfig.nvim' } }
+  use { 'neovim/nvim-lspconfig',
+    requires = {
+      {
+        'williamboman/mason.nvim',
+        config = function()
+          require('mason').setup {
+            registries = {
+              'lua:mason-registry.index',
+              'github:mason-org/mason-registry',
+            },
+          }
+          require('mason-registry').refresh()
+        end,
+      },
+      {
+        'williamboman/mason-lspconfig.nvim',
+        after = 'mason.nvim',
+      },
+    },
+    config = function() require('config.lspconfig') end,
+    after = { 'coq_nvim', 'mason-lspconfig.nvim' },
+  }
 
   use 'kien/rainbow_parentheses.vim'
-  use { 'morhetz/gruvbox'
-  , config = function()
-    vim.g.gruvbox_italic = true
-    vim.o.background = 'dark'
-    vim.cmd [[colorscheme gruvbox]]
-  end }
+  use { 'morhetz/gruvbox',
+    config = function()
+      vim.g.gruvbox_italic = true
+      vim.o.background = 'dark'
+      vim.cmd [[colorscheme gruvbox]]
+    end,
+  }
   use 'machakann/vim-highlightedyank'
-  use { 'dylanaraps/root.vim'
-  , config = function() require('config.rootvim') end }
-  use { 'nvim-lualine/lualine.nvim'
-  , config = function()
-    require('lualine').setup {
-      options = {
-        theme = 'gruvbox',
-      },
-    }
-  end
-  , requires = { { 'nvim-tree/nvim-web-devicons' } } }
-  use { 'lewis6991/gitsigns.nvim'
-  , config = function() require('gitsigns').setup() end }
-  use { 'nvim-telescope/telescope.nvim'
-  , requires = { { 'nvim-lua/plenary.nvim' }
-  , { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' } }
-  , config = function() require('config.telescope') end }
+  use { 'dylanaraps/root.vim',
+    config = function() require('config.rootvim') end,
+  }
+  use { 'nvim-lualine/lualine.nvim',
+    config = function()
+      require('lualine').setup {
+        options = {
+          theme = 'gruvbox',
+        },
+      }
+    end,
+    requires = { { 'nvim-tree/nvim-web-devicons' } },
+  }
+  use { 'lewis6991/gitsigns.nvim',
+    config = function() require('gitsigns').setup() end,
+  }
+  use { 'nvim-telescope/telescope.nvim',
+    requires = {
+      { 'nvim-lua/plenary.nvim' },
+      { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
+    },
+    config = function() require('config.telescope') end,
+  }
 
   use { 'tbastos/vim-lua', ft = 'lua' }
   use { 'cespare/vim-toml', ft = 'toml' }
-  use { 'euclio/vim-markdown-composer'
-  , ft = 'markdown'
-  , run = '$HOME/.cargo/bin/cargo build --release'
-  , config = [[require('config.markdowncomposer')]] }
+  use { 'euclio/vim-markdown-composer',
+    ft = 'markdown',
+    run = '$HOME/.cargo/bin/cargo build --release',
+    config = function() require('config.markdowncomposer') end,
+  }
   use { 'elixir-editors/vim-elixir', ft = 'elixir' }
 
   if packer_bootstrapped then
