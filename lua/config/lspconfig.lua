@@ -75,6 +75,13 @@ local servers = {
   dockerls = {},
   -- Python
   pyright = {
+    settings = {
+      pyright = {
+        disableLanguageServices = true,
+      },
+    },
+  },
+  jedi_language_server = {
     on_attach = function(client, bufnr)
       ih.on_attach(client, bufnr)
     end,
