@@ -29,22 +29,9 @@ return packer.startup(function(use)
   }
   use { 'neovim/nvim-lspconfig',
     requires = {
-      {
-        'williamboman/mason.nvim',
-        config = function()
-          require('mason').setup {
-            registries = {
-              'lua:mason-registry.index',
-              'github:mason-org/mason-registry',
-            },
-          }
-          require('mason-registry').refresh()
-        end,
-      },
-      {
-        'williamboman/mason-lspconfig.nvim',
-        after = 'mason.nvim',
-      },
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
+      'simrat39/inlay-hints.nvim',
     },
     config = function() require('config.lspconfig') end,
     after = { 'coq_nvim', 'mason-lspconfig.nvim' },

@@ -1,11 +1,41 @@
 -- Little hack for vimls to shut up on most lines. vim is technically an undefined global...
 vim = vim
 
+require('mason').setup {
+  registries = {
+    'lua:mason-registry.index',
+    'github:mason-org/mason-registry',
+  },
+}
+require('mason-registry').refresh()
+
+local ih = require('inlay-hints')
+ih.setup({
+  renderer = 'inlay-hints/render/eol',
+  eol = {
+    right_align = false,
+  },
+})
+
 local servers = {
   -- Lua
-  lua_ls = {},
+  lua_ls = {
+    on_attach = function(client, bufnr)
+      ih.on_attach(client, bufnr)
+    end,
+    settings = {
+      Lua = {
+        hint = {
+          enable = true,
+        },
+      },
+    },
+  },
   -- Rust
   rust_analyzer = {
+    on_attach = function(client, bufnr)
+      ih.on_attach(client, bufnr)
+    end,
     settings = {
       ['rust-analyzer'] = {
         imports = {
@@ -30,13 +60,25 @@ local servers = {
   -- JSON, JSON5
   jsonls = {},
   -- Shell, bash
-  bashls = {},
+  bashls = {
+    on_attach = function(client, bufnr)
+      ih.on_attach(client, bufnr)
+    end,
+  },
   -- C, C++
-  clangd = {},
+  clangd = {
+    on_attach = function(client, bufnr)
+      ih.on_attach(client, bufnr)
+    end,
+  },
   -- Dockerfile / docker-compose
   dockerls = {},
   -- Python
-  pyright = {},
+  pyright = {
+    on_attach = function(client, bufnr)
+      ih.on_attach(client, bufnr)
+    end,
+  },
   -- TOML
   taplo = {},
 }
@@ -129,7 +171,6 @@ vim.diagnostic.config({ float = { focusable = false } })
 
 for server, server_params in pairs(servers) do
   local params = {
-    on_attach = on_attach,
     handlers = {
       ['textDocument/publishDiagnostics'] = vim.lsp.with(
         vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -148,5 +189,12 @@ for server, server_params in pairs(servers) do
     },
   }
   local effective_params = vim.tbl_deep_extend('force', params, server_params)
+  effective_params.on_attach =
+      function(client, bufnr)
+        if server_params.on_attach then
+          server_params.on_attach(client, bufnr)
+        end
+        on_attach(client, bufnr)
+      end
   lsp[server].setup(coq_wrap(effective_params))
 end
