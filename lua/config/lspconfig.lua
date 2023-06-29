@@ -111,7 +111,8 @@ local function on_attach(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<Leader>dj', '<Cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<Leader>dk', '<Cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<Leader>gr', '<Cmd>Telescope lsp_references<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<Leader>gr', '<Cmd>Telescope live_grep<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<Leader>lr', '<Cmd>Telescope lsp_references<CR>', opts)
 
   local augroup_id = vim.api.nvim_create_augroup('LSPAttach', { clear = false })
   vim.api.nvim_clear_autocmds({ buffer = bufnr, group = augroup_id })
@@ -189,7 +190,7 @@ for server, server_params in pairs(servers) do
           focusable = false,
         }
       ),
-      ['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { focusable = false }),
+      -- ['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { focusable = false }),
     },
   }
   local effective_params = vim.tbl_deep_extend('force', params, server_params)
