@@ -88,6 +88,8 @@ local servers = {
   },
   -- TOML
   taplo = {},
+  -- Golang
+  gopls = {},
 }
 local servers_keys = {}
 for k, _ in pairs(servers) do
