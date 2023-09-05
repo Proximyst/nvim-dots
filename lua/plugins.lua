@@ -63,11 +63,12 @@ return packer.startup(function(use)
   use { 'lewis6991/gitsigns.nvim',
     config = function()
       require('gitsigns').setup {
-        current_line_blame = true,
-        current_line_blame_opts = {
-          virt_text_pos = 'right_align',
-          delay = 0,
-        },
+        -- Disabled until fixed: https://github.com/lewis6991/gitsigns.nvim/issues/870
+        -- current_line_blame = true,
+        -- current_line_blame_opts = {
+        --   virt_text_pos = 'right_align',
+        --   delay = 0,
+        -- },
       }
       vim.cmd [[ hi! link GitSignsCurrentLineBlame GruvboxFg4 ]]
     end,
