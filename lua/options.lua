@@ -5,20 +5,20 @@ vim = vim
 
 -- All <Leader> mappings should start with a space.
 vim.g.mapleader = ' '
-vim.api.nvim_set_keymap('n', '<Leader>w', ':w<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>w', '<CMD>w<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>J', '<C-W>j', { silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>H', '<C-W>h', { silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>K', '<C-W>k', { silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>L', '<C-W>l', { silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>h', ':noh<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tl', ':tabnext<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>th', ':tabprev<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tt', ':tabnew<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>te', ':tabedit<Space>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tj', ':tablast<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tk', ':tabfirst<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tq', ':tabclose<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tw', ':w<CR>:tabclose<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>h', '<CMD>noh<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>tl', '<CMD>tabnext<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>th', '<CMD>tabprev<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>tt', '<CMD>tabnew<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>te', '<CMD>tabedit<Space>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>tj', '<CMD>tablast<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>tk', '<CMD>tabfirst<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>tq', '<CMD>tabclose<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>tw', '<CMD>w<CR><CMD>tabclose<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>s', '"+', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<Leader>s', '"+', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Esc>', '', {
@@ -140,21 +140,6 @@ vim.api.nvim_create_user_command('Tabs', function(opts)
   vim.bo.softtabstop = num
   vim.bo.expandtab = false
 end, { nargs = 1, desc = 'Sets the indent size of Tabs for the buffer.' })
-
-function Modeline()
-  local et = vim.bo.expandtab and '' or 'no'
-  local modeline = string.format('vim: set ff=unix autoindent ts=%d sw=%d tw=%d %set :'
-  , vim.bo.tabstop
-  , vim.bo.shiftwidth
-  , vim.bo.textwidth
-  , et)
-  if not string.find(modeline, ' ') then
-    modeline = ' ' .. modeline
-  end
-end
-
-vim.api.nvim_set_keymap('n', '<Leader>ml', ''
-, { noremap = true, silent = true, callback = Modeline })
 
 -- Disable unused providers
 vim.g.loaded_perl_provider = 0
