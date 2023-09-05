@@ -61,7 +61,17 @@ return packer.startup(function(use)
     requires = { { 'nvim-tree/nvim-web-devicons' } },
   }
   use { 'lewis6991/gitsigns.nvim',
-    config = function() require('gitsigns').setup() end,
+    config = function()
+      require('gitsigns').setup {
+        current_line_blame = true,
+        current_line_blame_opts = {
+          virt_text_pos = 'right_align',
+          delay = 0,
+        },
+      }
+      vim.cmd [[ hi! link GitSignsCurrentLineBlame GruvboxFg4 ]]
+    end,
+    after = { 'gruvbox' },
   }
   use { 'nvim-telescope/telescope.nvim',
     requires = {

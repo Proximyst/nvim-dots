@@ -154,18 +154,18 @@ local function on_attach(client, bufnr)
     callback = function()
       local completed_item = vim.v.completed_item
       if not (completed_item
-          and completed_item.user_data
-          and completed_item.user_data.nvim
-          and completed_item.user_data.nvim.lsp
-          and completed_item.user_data.nvim.lsp.completion_item) then
+            and completed_item.user_data
+            and completed_item.user_data.nvim
+            and completed_item.user_data.nvim.lsp
+            and completed_item.user_data.nvim.lsp.completion_item) then
         return
       end
 
       local item = completed_item.user_data.nvim.lsp.completion_item
       vim.lsp.buf_request(bufnr, 'completionItem/resolve', item, function(_, _, result)
         if (result
-            and result.params
-            and result.params.additionalTextEdits) then
+              and result.params
+              and result.params.additionalTextEdits) then
           vim.lsp.util.apply_text_edits(result.params.additionalTextEdits, bufnr, 'utf-8')
         end
       end)
