@@ -60,18 +60,15 @@ return packer.startup(function(use)
     end,
     requires = { { 'nvim-tree/nvim-web-devicons' } },
   }
-  use { 'lewis6991/gitsigns.nvim',
+  use { 'f-person/git-blame.nvim',
     config = function()
-      require('gitsigns').setup {
-        -- Disabled until fixed: https://github.com/lewis6991/gitsigns.nvim/issues/870
-        -- current_line_blame = true,
-        -- current_line_blame_opts = {
-        --   virt_text_pos = 'right_align',
-        --   delay = 0,
-        -- },
+      require('gitblame').setup {
+        highlight_group = 'NonText',
       }
-      vim.cmd [[ hi! link GitSignsCurrentLineBlame GruvboxFg4 ]]
     end,
+  }
+  use { 'lewis6991/gitsigns.nvim',
+    config = function() require('gitsigns').setup() end,
     after = { 'gruvbox' },
   }
   use { 'nvim-telescope/telescope.nvim',
