@@ -46,8 +46,8 @@ return packer.startup(function(use)
     end,
   }
   use 'machakann/vim-highlightedyank'
-  use { 'dylanaraps/root.vim',
-    config = function() require('config.rootvim') end,
+  use { 'notjedi/nvim-rooter.lua',
+    config = function() require('nvim-rooter').setup() end,
   }
   use { 'nvim-lualine/lualine.nvim',
     config = function()
