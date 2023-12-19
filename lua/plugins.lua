@@ -19,14 +19,16 @@ local function install_lazy_nvim()
 end
 
 local plugins = {
-  { 'morhetz/gruvbox',
+  { 'sainnhe/gruvbox-material',
     lazy = false,
     priority = 5000,
     config = function()
-      vim.g.gruvbox_italic = true
-      vim.o.background = 'dark'
-      vim.g.gruvbox_contrast_dark = 'soft'
-      vim.cmd [[colorscheme gruvbox]]
+      vim.opt.termguicolors = true
+      vim.opt.background = 'dark'
+      vim.g.gruvbox_material_background = 'soft'
+      vim.g.gruvbox_material_foreground = 'material' -- material, mix, or original; i wanna try the new stuff.
+      vim.g.gruvbox_material_better_performance = true
+      vim.cmd [[colorscheme gruvbox-material]]
     end,
   },
 
@@ -62,7 +64,7 @@ local plugins = {
     config = function()
       require('lualine').setup {
         options = {
-          theme = 'gruvbox',
+          theme = 'gruvbox-material',
           component_separators = { left = '|', right = '|' },
         },
       }
