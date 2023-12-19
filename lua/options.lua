@@ -26,10 +26,12 @@ vim.api.nvim_set_keymap('n', '<Esc>', '', {
   silent = true,
   callback = function()
     for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
-      if vim.api.nvim_win_get_config(winid).relative ~= '' then
-        -- This is a floating window.
-        vim.api.nvim_win_close(winid, true)
-      end
+      pcall(function()
+        if vim.api.nvim_win_get_config(winid).relative ~= '' then
+          -- This is a floating window.
+          vim.api.nvim_win_close(winid, true)
+        end
+      end)
     end
   end
 })
@@ -80,8 +82,6 @@ vim.opt.writebackup = false
 vim.opt.timeoutlen = 500
 -- ... but don't have timeouts at all for keypresses.
 vim.opt.ttimeoutlen = 0
--- Don't redraw the screen while executing macros.
-vim.opt.lazyredraw = true
 -- Always show the status line.
 vim.opt.laststatus = 2
 -- Don't show me ins-completion-menu messages.

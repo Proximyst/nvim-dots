@@ -87,6 +87,9 @@ local plugins = {
     },
     config = function() require('config.telescope') end,
   },
+  { 'folke/trouble.nvim',
+    dependencies = { { 'nvim-tree/nvim-web-devicons' } },
+  },
 
   { 'euclio/vim-markdown-composer',
     ft = 'markdown',
