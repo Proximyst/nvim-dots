@@ -1,3 +1,6 @@
+-- Little hack for vimls to shut up on most lines. vim is technically an undefined global...
+vim = vim
+
 local telescope = require('telescope')
 local builtin = require('telescope.builtin')
 local actions = require('telescope.actions')
