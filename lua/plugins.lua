@@ -54,6 +54,15 @@ local plugins = {
   { 'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
   },
+  { 'nvim-treesitter/nvim-treesitter-context',
+    opts = {
+      enable = true,
+      max_lines = 5,
+      min_window_height = 10,
+      line_numbers = true,
+      trim_scope = 'outer',
+    },
+  },
 
   'machakann/vim-highlightedyank',
   { 'notjedi/nvim-rooter.lua',
