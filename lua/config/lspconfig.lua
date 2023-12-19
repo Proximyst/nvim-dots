@@ -90,6 +90,8 @@ local servers = {
   taplo = {},
   -- Golang
   gopls = {},
+  -- Elixir
+  elixirls = {},
 }
 local servers_keys = {}
 for k, _ in pairs(servers) do
