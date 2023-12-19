@@ -21,10 +21,11 @@ end
 local plugins = {
   { 'morhetz/gruvbox',
     lazy = false,
-    priority = 1000,
+    priority = 5000,
     config = function()
       vim.g.gruvbox_italic = true
       vim.o.background = 'dark'
+      vim.g.gruvbox_contrast_dark = 'soft'
       vim.cmd [[colorscheme gruvbox]]
     end,
   },
@@ -33,7 +34,6 @@ local plugins = {
   'tpope/vim-sleuth',
   { 'ms-jpq/coq_nvim',
     dependencies = { { 'ms-jpq/coq.artifacts' } },
-    lazy = false,
     config = function()
       vim.g['coq_settings'] = { auto_start = 'shut-up' }
     end,
@@ -42,7 +42,7 @@ local plugins = {
     dependencies = {
       { 'williamboman/mason.nvim' },
       { 'williamboman/mason-lspconfig.nvim',
-        dependencies = { 'mason.nvim' }
+        dependencies = { 'mason.nvim' },
       },
       { 'simrat39/inlay-hints.nvim' },
       'coq_nvim',
