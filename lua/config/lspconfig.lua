@@ -97,9 +97,13 @@ local servers_keys = {}
 for k, _ in pairs(servers) do
   table.insert(servers_keys, k)
 end
-require('mason-lspconfig').setup { ensure_installed = servers_keys }
-local lsp = require('lspconfig')
-local coq_wrap = require('coq').lsp_ensure_capabilities
+local lsp_zero = require('lsp-zero')
+require('mason-lspconfig').setup {
+  ensure_installed = servers_keys,
+  handlers = {
+    lsp_zero.default_setup,
+  },
+}
 
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap = true, silent = true }
@@ -178,6 +182,8 @@ end
 -- Stop diagnostics from taking over focus.
 vim.diagnostic.config({ float = { focusable = false } })
 
+local lsp = require('lspconfig')
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 for server, server_params in pairs(servers) do
   local params = {
     handlers = {
@@ -205,5 +211,31 @@ for server, server_params in pairs(servers) do
         end
         on_attach(client, bufnr)
       end
-  lsp[server].setup(coq_wrap(effective_params))
+  effective_params.capabilities = capabilities
+  lsp[server].setup(effective_params)
 end
+
+local cmp = require('cmp')
+cmp.setup {
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+  }),
+  formatting = lsp_zero.cmp_format(),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'path' },
+    { name = 'nvim_lua' },
+  }, {
+    { name = 'buffer' },
+  }),
+}
+
+lsp_zero.setup()
+
+vim.diagnostic.config({
+  virtual_text = true
+})

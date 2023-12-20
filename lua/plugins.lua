@@ -5,7 +5,7 @@ vim = vim
 
 local function install_lazy_nvim()
   local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
-  if not vim.loop.fs_stat(lazypath) then
+  if not vim.uv.fs_stat(lazypath) then
     vim.fn.system({
       'git',
       'clone',
@@ -34,12 +34,6 @@ local plugins = {
 
   'tpope/vim-endwise',
   'tpope/vim-sleuth',
-  { 'ms-jpq/coq_nvim',
-    dependencies = { { 'ms-jpq/coq.artifacts' } },
-    config = function()
-      vim.g['coq_settings'] = { auto_start = 'shut-up' }
-    end,
-  },
   { 'neovim/nvim-lspconfig',
     dependencies = {
       { 'williamboman/mason.nvim' },
@@ -47,7 +41,23 @@ local plugins = {
         dependencies = { 'mason.nvim' },
       },
       { 'simrat39/inlay-hints.nvim' },
-      'coq_nvim',
+      { 'hrsh7th/nvim-cmp',
+        dependencies = {
+          { 'hrsh7th/cmp-buffer' },
+          { 'hrsh7th/cmp-path' },
+          { 'hrsh7th/cmp-nvim-lsp' },
+          { 'hrsh7th/cmp-nvim-lua' },
+          { 'hrsh7th/cmp-cmdline' },
+          { 'saadparwaiz1/cmp_luasnip' },
+
+          -- Snippets
+          { 'L3MON4D3/LuaSnip' },
+          { 'rafamadriz/friendly-snippets' },
+        },
+      },
+      { 'VonHeikemen/lsp-zero.nvim',
+        branch = 'v3.x',
+      },
     },
     config = function() require('config.lspconfig') end,
   },
@@ -110,6 +120,7 @@ local lazy_opts = {
   checker = {
     enabled = true,
     frequency = 3600, -- seconds; once an hour.
+    notify = false,
   },
 }
 
