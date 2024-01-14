@@ -40,7 +40,6 @@ local plugins = {
       { 'williamboman/mason-lspconfig.nvim',
         dependencies = { 'mason.nvim' },
       },
-      { 'simrat39/inlay-hints.nvim' },
       { 'hrsh7th/nvim-cmp',
         dependencies = {
           { 'hrsh7th/cmp-buffer' },
@@ -115,6 +114,7 @@ local plugins = {
     build = '$HOME/.cargo/bin/cargo build --release',
     config = function() require('config.markdowncomposer') end,
   },
+  { 'dhruvasagar/vim-table-mode' },
 }
 local lazy_opts = {
   checker = {
