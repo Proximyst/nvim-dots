@@ -89,6 +89,7 @@ lsp_zero.on_attach(function (client, bufnr)
   vim.keymap.set('n', '<Leader>ac', vim.lsp.buf.code_action, { silent = true, buffer = bufnr })
   vim.keymap.set('n', '<Leader>dj', vim.diagnostic.goto_next, { silent = true, buffer = bufnr })
   vim.keymap.set('n', '<Leader>dk', vim.diagnostic.goto_prev, { silent = true, buffer = bufnr })
+  vim.keymap.set('n', '<Leader>dK', vim.diagnostic.open_float, { silent = true, buffer = bufnr })
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, { silent = true, buffer = bufnr })
 
   local augroup_id = vim.api.nvim_create_augroup('CustomLspOnAttach', { clear = false })
@@ -136,22 +137,65 @@ for server, server_params in pairs(servers) do
   lsp[server].setup(effective_params)
 end
 
+local has_words_before = function()
+  local line, col = (unpack or table.unpack)(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
 local cmp = require('cmp')
+local luasnip = require('luasnip')
+luasnip.config.setup {
+  history = true,
+  delete_check_events = 'TextChanged',
+  region_check_events = 'CursorMoved',
+}
+vim.tbl_map(function(type) require('luasnip.loaders.from_' .. type).lazy_load() end, { 'vscode', 'snipmate', 'lua' })
 cmp.setup {
+  preselect = cmp.PreselectMode.None,
+  confirm_opts = {
+    behavior = cmp.ConfirmBehavior.Replace,
+    select = false,
+  },
   mapping = cmp.mapping.preset.insert({
-    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.abort(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ['<Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+    ['<S-Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+    ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+    ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+    ['<C-Space>'] = cmp.mapping.complete { select = true },
+    ['<C-e>'] = cmp.mapping { i = cmp.mapping.abort(), c = cmp.mapping.close() },
+    ['<CR>'] = cmp.mapping.confirm { select = false },
   }),
   formatting = lsp_zero.cmp_format(),
+  snippet = {
+    expand = function(args)
+      luasnip.lsp_expand(args.body)
+    end,
+  },
   sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
-    { name = 'path' },
-    { name = 'nvim_lua' },
-  }, {
-    { name = 'buffer' },
+    { name = 'nvim_lsp_signature_help', priority = 1250 },
+    { name = 'nvim_lsp', priority = 1000 },
+    { name = 'luasnip', priority = 750 },
+    { name = 'buffer', priority = 500 },
+    { name = 'nvim_lua', priority = 250 },
+    { name = 'path', priority = 100 },
   }),
 }
 
