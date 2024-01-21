@@ -1,42 +1,26 @@
 -- vim: set ff=unix autoindent ts=2 sw=2 tw=0 et :
 
--- Little hack for vimls to shut up on most lines. vim is technically an undefined global...
-vim = vim
-
 -- All <Leader> mappings should start with a space.
 vim.g.mapleader = ' '
-vim.api.nvim_set_keymap('n', '<Leader>w', '<CMD>w<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>J', '<C-W>j', { silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>H', '<C-W>h', { silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>K', '<C-W>k', { silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>L', '<C-W>l', { silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>h', '<CMD>noh<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tl', '<CMD>tabnext<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>th', '<CMD>tabprev<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tt', '<CMD>tabnew<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>te', '<CMD>tabedit<Space>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tj', '<CMD>tablast<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tk', '<CMD>tabfirst<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tq', '<CMD>tabclose<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>tw', '<CMD>w<CR><CMD>tabclose<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>s', '"+', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<Leader>s', '"+', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Esc>', '', {
-  noremap = true,
-  silent = true,
-  callback = function()
-    for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
-      pcall(function()
-        if vim.api.nvim_win_get_config(winid).relative ~= '' then
-          -- This is a floating window.
-          vim.api.nvim_win_close(winid, true)
-        end
-      end)
-    end
+vim.keymap.set('n', '<Leader>w', '<CMD>w<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<Leader>j', '<C-W>j', { noremap = true, silent = true })
+vim.keymap.set('n', '<Leader>h', '<C-W>h', { noremap = true, silent = true })
+vim.keymap.set('n', '<Leader>k', '<C-W>k', { noremap = true, silent = true })
+vim.keymap.set('n', '<Leader>l', '<C-W>l', { noremap = true, silent = true })
+vim.keymap.set('n', '<Leader>H', '<CMD>noh<CR>', { noremap = true, silent = true })
+vim.keymap.set({ 'n', 'v' }, '<Leader>s', '"+', { noremap = true, silent = true })
+vim.keymap.set('n', '<Esc>', function()
+  for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+    pcall(function()
+      if vim.api.nvim_win_get_config(winid).relative ~= '' then
+        -- This is a floating window.
+        vim.api.nvim_win_close(winid, true)
+      end
+    end)
   end
-})
+end, { noremap = true, silent = true })
 
--- Have coloured columns at col 80, 120, 140, and 240.
+-- Have coloured columns at col 80, 120, ...
 vim.wo.colorcolumn = '80,120,140,240'
 -- ... and have it be lightgrey, cause bright red is ugly.
 vim.cmd [[highlight ColorColumn ctermbg=0 guibg=lightgrey]]
@@ -51,7 +35,7 @@ vim.opt.wildmenu = true
 vim.opt.cursorline = true
 -- When typing searches, show the matches as they're being typed.
 vim.opt.incsearch = true
--- Highlight all the previous search matches. Clear with :noh.
+-- Highlight all the previous search matches. Clear with :noh / <Leader>H.
 vim.opt.hlsearch = true
 -- Override the ignorecase option if the search includes uppercase characters.
 -- This means searching for "abc" will find both "abc" and "Abc", but searching
@@ -108,14 +92,6 @@ vim.opt.softtabstop = 0
 -- Shifting should be 4 spaces long.
 vim.opt.shiftwidth = 4
 
--- For JSON, we want to match comments appropriately.
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'json',
-  callback = function(_args)
-    vim.cmd [[syntax match Comment +\/\/.\+$+]]
-  end
-})
-
 -- Add commands for :Spaces <n> and :Tabs <n> to set the vim mode for what the
 --   file uses.
 vim.api.nvim_create_user_command('Spaces', function(opts)
@@ -144,3 +120,19 @@ end, { nargs = 1, desc = 'Sets the indent size of Tabs for the buffer.' })
 -- Disable unused providers
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
+
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
+if not vim.uv.fs_stat(lazypath) then
+  vim.fn.system({
+    'git',
+    'clone',
+    '--filter=blob:none',
+    'https://github.com/folke/lazy.nvim.git',
+    '--branch=stable',
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- This will merge all files under `/lua/plugins/` into a spec.
+require('lazy').setup('plugins')
