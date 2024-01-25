@@ -221,6 +221,8 @@ return {
       end
 
       local lsp_zero = require('lsp-zero')
+      lsp_zero.extend_lspconfig()
+
       require('mason-lspconfig').setup {
         ensure_installed = servers_keys,
         handlers = {
