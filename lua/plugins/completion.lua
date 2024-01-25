@@ -76,6 +76,7 @@ return {
     lazy = true,
     config = function()
       local lsp_zero = require('lsp-zero')
+      lsp_zero.extend_lspconfig()
       lsp_zero.on_attach(function(client, bufnr)
         vim.keymap.set('n', '<Leader>gd', vim.lsp.buf.declaration, { silent = true, buffer = bufnr })
         vim.keymap.set('n', '<Leader>gD', vim.lsp.buf.definition, { silent = true, buffer = bufnr })
