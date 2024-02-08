@@ -154,12 +154,12 @@ return {
       { 'hrsh7th/cmp-nvim-lua' },
       { 'hrsh7th/cmp-cmdline' },
       { 'saadparwaiz1/cmp_luasnip' },
+      'neovim/nvim-lspconfig',
     },
     opts = function()
-      local cmp = require('cmp')
-      local defaults = require('cmp.config.default')()
-      local luasnip = require('luasnip')
       local lsp_zero = require('lsp-zero')
+      local cmp = require('cmp')
+      local luasnip = require('luasnip')
       return {
         preselect = cmp.PreselectMode.None,
         confirm_opts = {
@@ -248,6 +248,12 @@ return {
                 focusable = false,
               }
             ),
+            --            ['textDocument/hover'] = vim.lsp.with(
+            --              vim.lsp.handlers.hover, {
+            --                silent = true,
+            --                focusable = false,
+            --              },
+            --            ),
           },
           capabilities = capabilities,
         }
