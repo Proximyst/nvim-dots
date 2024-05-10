@@ -20,6 +20,8 @@ vim.keymap.set('n', '<Esc>', function()
   end
 end, { noremap = true, silent = true })
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
+-- Disable NBSPs
+vim.keymap.set('i', '\\u00A0', '<Space>', { noremap = true, silent = true })
 
 -- Have coloured columns at col 80, 120, ...
 vim.wo.colorcolumn = '80,120,140,240'
