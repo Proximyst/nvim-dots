@@ -40,12 +40,6 @@ return {
     },
   },
   {
-    'f-person/git-blame.nvim',
-    opts = {
-      highlight_group = 'NonText',
-    },
-  },
-  {
     'folke/trouble.nvim',
     dependencies = { { 'nvim-tree/nvim-web-devicons' } },
   },
